@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
 #api key
-API_KEY = "AIzaSyCppZRLDk2u8fM1HR5MCmzwTOpr326ULT8"
+API_KEY = "API KEY"
 
 # placeing the api key in the configure api key
 genai.configure(api_key=API_KEY)
@@ -24,4 +24,5 @@ while True:
         response = model.generate_content(user_input)
         print("Bot:", response.text.strip())
     except Exception as e:
+
         print("Bot: Error -", str(e))
