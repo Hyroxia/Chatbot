@@ -435,7 +435,7 @@ def chat_select_creater():
 def message_read_creator():
     #creating the chat scrollable area
     #c
-    canvas = Canvas(mainWindow, bg="#333333", highlightbackground="#888888", highlightcolor="#888888", highlightthickness=2, width=400, height=400)
+    canvas = Canvas(mainWindow, bg="#333333", width=400, height=420)
     scrollable_frame = Frame(canvas, bg="#414141", highlightbackground="#888888", highlightcolor="#888888", highlightthickness=2)
 
     # Create a scrollbar
@@ -445,10 +445,6 @@ def message_read_creator():
     # Grid the scrollbar and canvas
     scrollbar.grid(row=4, column=45, rowspan=38, sticky=NS)
     canvas.grid(row=4, column=5, columnspan=39, rowspan=38, sticky=NSEW)
-
-    # Configure grid weights
-    mainWindow.grid_rowconfigure(0, weight=1)
-    mainWindow.grid_columnconfigure(0, weight=1)
 
     # Create a window in the canvas
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
@@ -461,7 +457,7 @@ def message_read_creator():
 
     scrollable_frame.grid(row=1, column=0, columnspan=2, sticky='nsew')
 
-def display_chat(chat_id):
+def display_chat(chat_id, word_limit=13):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
@@ -475,8 +471,9 @@ def display_chat(chat_id):
     messages = cursor.fetchall()
     conn.close()
 
-    for widget in scrollable_frame.winfo_children():
-        widget.destroy()
+    if scrollable_frame.winfo_exists():
+        for widget in scrollable_frame.winfo_children():
+            widget.destroy()
 
     for message in messages:
         message_id, user_id, message_content = message
@@ -484,11 +481,19 @@ def display_chat(chat_id):
         # Limit the display of user ID to a maximum of 5 characters
         limited_user_id = str(user_id)[:5]  # Adjust the number as needed
 
+        # Split the message into words and format it according to the word limit
+        words = message_content.split()
+        formatted_message = ""
+        for i in range(0, len(words), word_limit):
+            line = ' '.join(words[i:i + word_limit])
+            formatted_message += line + "\n"  # Add a newline for each line
+
+        # Create the label with the formatted message
         if user_id == 1:  # Human
-            label = Label(scrollable_frame, text=f"User {limited_user_id}: {message_content}", bg="#414141", fg="white", anchor='e')
+            label = Label(scrollable_frame, text=f"User {limited_user_id}: {formatted_message.strip()}", bg="#414141", fg="white", anchor='e', justify='right')
             label.pack(fill='x', padx=10, pady=5)
         elif user_id == -1:  # AI
-            label = Label(scrollable_frame, text=f"AI {limited_user_id}: {message_content}", bg="#414141", fg="white", anchor='w')
+            label = Label(scrollable_frame, text=f"AI {limited_user_id}: {formatted_message.strip()}", bg="#414141", fg="white", anchor='w', justify='left')
             label.pack(fill='x', padx=10, pady=5)
 
     # Schedule the next refresh
