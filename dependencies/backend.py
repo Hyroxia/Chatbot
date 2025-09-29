@@ -10,7 +10,7 @@ def make_req(question):
     response = requests.post(
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-            "Authorization": "Bearer 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",
+            "Authorization": "Bearer sk-or-v1-d96ab74e7dc20ac8fb9c198d3b54852639489c37d42cbee90c3beeb3ebfxxxxx",
             "Content-Type": "application/json",  # Important: Add this header
         },
         data=json.dumps({
@@ -69,4 +69,5 @@ if __name__ == "__main__":
     VALUES (?, ?, ?)
     ''', (chat_id, aiUserID , aiResponse))
     conn.commit()
+
     os._exit(0)
