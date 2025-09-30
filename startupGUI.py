@@ -11,15 +11,6 @@ import os
 import subprocess
 import threading
 
-'''
-todo list:
-- bind enter key to enter information
-- ensure credit page (include license information)
-- create shell of the main screen
-- create settings screen
-- consider what to make configurable in settings
-'''
-
 #gaining system information for configuration
 userMaxScreenSize = Tk()
 maxScreenWidth = userMaxScreenSize.winfo_screenwidth()
@@ -490,10 +481,10 @@ def display_chat(chat_id, word_limit=13):
 
         # Create the label with the formatted message
         if user_id == 1:  # Human
-            label = Label(scrollable_frame, text=f"User {limited_user_id}: {formatted_message.strip()}", bg="#414141", fg="white", anchor='e', justify='right')
+            label = Label(scrollable_frame, text=f"User: {formatted_message.strip()}", bg="#414141", fg="white", anchor='e', justify='right')
             label.pack(fill='x', padx=10, pady=5)
         elif user_id == -1:  # AI
-            label = Label(scrollable_frame, text=f"AI {limited_user_id}: {formatted_message.strip()}", bg="#414141", fg="white", anchor='w', justify='left')
+            label = Label(scrollable_frame, text=f"GLaDOS: {formatted_message.strip()}", bg="#414141", fg="white", anchor='w', justify='left')
             label.pack(fill='x', padx=10, pady=5)
 
     # Schedule the next refresh
@@ -508,7 +499,7 @@ def message_read_creator():
     canvas = Canvas(mainWindow, bg="#333333", highlightbackground="#888888", highlightcolor="#888888", highlightthickness=2)
     scrollable_frame = Frame(canvas, bg="#414141", highlightbackground="#888888", highlightcolor="#888888", highlightthickness=2)
 
-    scrollbar = Scrollbar(mainWindow, orient="vertical", command=canvas.yview, bg="#414141", troughcolor="#B40000", highlightbackground="#1C9B86")
+    scrollbar = Scrollbar(mainWindow, orient="vertical", command=canvas.yview, bg="#414141")
     canvas.configure(yscrollcommand=scrollbar.set)
 
     scrollbar.grid(row=4, column=45, rowspan=38, sticky=NS)
@@ -592,23 +583,14 @@ def main_screen():
 
     #Creating text entry
     msEntry = Entry(mainWindow, width=60, justify=LEFT, cursor="xterm", font=(userSelectedFont, 10), bg="#2A2A2A", fg="#FFFFFF")
-    msEntry.grid_configure(row=43, column=5, rowspan=1, columnspan=15, sticky=NSEW)
+    msButtonEntryEnter = Button(mainWindow, text="\u21B5", font=(userSelectedFont, 10), bg="#2A2A2A", fg="#FFFFFF", command="#")
+    msEntry.bind("<Return>", lambda *args:"#")
+
+    msEntry.grid_configure(row=43, column=5, rowspan=1, columnspan=18, sticky=NSEW)
+    msButtonEntryEnter.grid_configure(row=43, column=19, columnspan=2, sticky=NSEW)
 
     chat_select_creater()
     message_read_creator()
-
-    '''
-    -use of tk.messages would see use for the responses and query
-    -dynamically moving text boxes up on the canvas as a new message gets created is the next issue
-    -same problem arises for the new chats section, although there we may see use of labels.
-    '''
-
-'''
-    settingsArea = Label(mainWindow, bg="#8aaac2")
-    settingsArea.grid_configure(row=38, column=0, rowspan=6, columnspan=4, sticky=NSEW)
-
-    https://discuss.python.org/t/hide-show-windows-taskbar/9688
-'''
 
 draw_StartupLoad(db_name)
 mainWindow.mainloop()
